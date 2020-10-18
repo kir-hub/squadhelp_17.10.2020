@@ -22,11 +22,11 @@ module.exports.dataForContest = async (req, res, next) => {
         },
       },
     });
-    if ( !characteristics) {
+    if (!characteristics) {
       return next(new ServerError());
     }
     characteristics.forEach(characteristic => {
-      if ( !response[ characteristic.type ]) {
+      if (!response[ characteristic.type ]) {
         response[ characteristic.type ] = [];
       }
       response[ characteristic.type ].push(characteristic.describe);
@@ -243,8 +243,9 @@ module.exports.getCustomersContests = (req, res, next) => {
 };
 
 module.exports.getContests = (req, res, next) => {
-  const predicates = UtilFunctions.createWhereForAllContests(req.body.typeIndex,
+  const predicates = UtilFunctions.createWhereForAllContests(req.body.selectedContestTypes,
     req.body.contestId, req.body.industry, req.body.awardSort);
+    // - req.body.typeIndex, + selectedContestTypes
   db.Contests.findAll({
     where: predicates.where,
     order: predicates.order,
@@ -263,6 +264,7 @@ module.exports.getContests = (req, res, next) => {
       contests.forEach(
         contest => contest.dataValues.count = contest.dataValues.Offers.length);
       let haveMore = true;
+      //if(constest.length===0 || contest.length<=req.body.limit){}смотри ниже
       if (contests.length === 0) {
         haveMore = false;
       }
